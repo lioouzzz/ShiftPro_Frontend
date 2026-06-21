@@ -1,30 +1,49 @@
-import { schedule } from "../services/scheduleService";
-
+import { useState } from "react";
 
 import { Link } from "react-router-dom";
 
 function ScheduleManagePage() {
-  const schedules = [
-    {
-      id: 1,
-      employeeName: "王小明",
-      workDate: "2026-06-21",
-      startTime: "09:00",
-      endTime: "18:00",
-      shiftType: "早班",
-    },
-    {
-      id: 2,
-      employeeName: "李小華",
-      workDate: "2026-06-22",
-      startTime: "13:00",
-      endTime: "22:00",
-      shiftType: "晚班",
-    },
-  ];
+  const today = new Date();
+
+  // 只開放下個月
+  const scheduleYear =
+    today.getMonth() === 11 ? today.getFullYear() + 1 : today.getFullYear();
+
+  const scheduleMonth =
+    today.getMonth() === 11 ? 0 : today.getMonth() + 1;
+
+  const firstDay = new Date(scheduleYear, scheduleMonth, 1).getDay();
+  const totalDays = new Date(scheduleYear, scheduleMonth + 1, 0).getDate();
+
+  const calendarDays = [];
+
+  for (let i = 0; i < firstDay; i++) {
+    calendarDays.push(null);
+  }
+
+  for (let day = 1; day <= totalDays; day++) {
+    calendarDays.push(day);
+  }
+
+  const formatDate = (day) => {
+    const month = String(scheduleMonth + 1).padStart(2, "0");
+    const date = String(day).padStart(2, "0");
+
+    return `${scheduleYear}-${month}-${date}`;
+  };
+
+  const handleSelectDate = (day) => {
+    if (!day) return;
+
+    const selectedDate = formatDate(day);
+
+    console.log("選到日期：", selectedDate);
+    alert(`你選擇了 ${selectedDate}`);
+  };
 
   return (
     <div className="min-h-screen bg-stone-50">
+      {/* 上方導覽列 */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
           <h3
@@ -46,87 +65,69 @@ function ScheduleManagePage() {
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-3xl font-bold text-stone-700">
-              排班管理
-            </h2>
+      <main className="max-w-7xl mx-auto p-8">
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-stone-700">
+            排班行事曆
+          </h2>
 
-            <p className="text-gray-500 mt-2">
-              查看、新增、編輯與刪除員工班表
-            </p>
-          </div>
-
-          <button className="px-5 py-2 rounded-lg bg-stone-700 text-white hover:bg-stone-800 transition">
-            新增班表
-          </button>
+          <p className="text-gray-500 mt-2">
+            目前僅開放排定下個月班表
+          </p>
         </div>
 
-        <div className="bg-white shadow rounded-xl overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-stone-100 text-stone-700">
-              <tr>
-                <th className="px-6 py-4">ID</th>
-                <th className="px-6 py-4">員工</th>
-                <th className="px-6 py-4">日期</th>
-                <th className="px-6 py-4">開始時間</th>
-                <th className="px-6 py-4">結束時間</th>
-                <th className="px-6 py-4">班別</th>
-                <th className="px-6 py-4 text-right">操作</th>
-              </tr>
-            </thead>
+        <div className="bg-white shadow rounded-xl p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h3 className="text-2xl font-bold text-stone-700">
+                {scheduleYear} 年 {scheduleMonth + 1} 月
+              </h3>
 
-            <tbody>
-              {schedules.map((schedule) => (
-                <tr
-                  key={schedule.id}
-                  className="border-t hover:bg-stone-50 transition"
-                >
-                  <td className="px-6 py-4">{schedule.id}</td>
+              <p className="text-sm text-gray-500 mt-1">
+                僅能選擇此月份日期
+              </p>
+            </div>
 
-                  <td className="px-6 py-4 font-medium text-stone-700">
-                    {schedule.employeeName}
-                  </td>
+            <button className="px-5 py-2 rounded-lg bg-stone-700 text-white hover:bg-stone-800 transition">
+              新增班表
+            </button>
+          </div>
 
-                  <td className="px-6 py-4">{schedule.workDate}</td>
+          <div className="grid grid-cols-7 text-center font-semibold text-stone-600 border-b pb-3 mb-3">
+            <div>日</div>
+            <div>一</div>
+            <div>二</div>
+            <div>三</div>
+            <div>四</div>
+            <div>五</div>
+            <div>六</div>
+          </div>
 
-                  <td className="px-6 py-4">{schedule.startTime}</td>
-
-                  <td className="px-6 py-4">{schedule.endTime}</td>
-
-                  <td className="px-6 py-4">
-                    <span className="px-3 py-1 rounded-full text-sm bg-stone-100 text-stone-600">
-                      {schedule.shiftType}
-                    </span>
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2">
-                      <button className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 transition">
-                        編輯
-                      </button>
-
-                      <button className="px-3 py-1 rounded border border-red-300 text-red-500 hover:bg-red-50 transition">
-                        刪除
-                      </button>
+          <div className="grid grid-cols-7 gap-3">
+            {calendarDays.map((day, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelectDate(day)}
+                className={`min-h-32 rounded-xl border p-3 transition ${
+                  day
+                    ? "bg-white hover:shadow-md cursor-pointer"
+                    : "bg-transparent border-transparent"
+                }`}
+              >
+                {day && (
+                  <>
+                    <div className="font-bold text-stone-700">
+                      {day}
                     </div>
-                  </td>
-                </tr>
-              ))}
 
-              {schedules.length === 0 && (
-                <tr>
-                  <td
-                    colSpan="7"
-                    className="px-6 py-8 text-center text-gray-500"
-                  >
-                    目前沒有排班資料
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                    <p className="text-xs text-gray-400 mt-2">
+                      可選擇
+                    </p>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     </div>
