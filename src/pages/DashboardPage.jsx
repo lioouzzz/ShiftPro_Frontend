@@ -78,15 +78,19 @@ function DashboardPage() {
           <div className="grid grid-cols-2 gap-4">
             
             
-            {(isAdmin || isBoss) && (<div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
+            {(isAdmin || isBoss) && 
+            
+            (<Link to="/ScheduleManage" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
+            <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 <h4 className="font-semibold text-lg mb-2">
                 全體員工班表
                 </h4>
 
                 <p className="text-sm text-gray-500">
-                查看全體員工排班資料
+                管理全體員工排班資料
                 </p>
-            </div>)}
+            </div>
+            </Link>)}
 
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 

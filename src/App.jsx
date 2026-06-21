@@ -8,6 +8,8 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import EmployeeDashboardPage from "./pages/EmployeeDashboardPage";
+import ScheduleManagePage from "./pages/ScheduleManagePage";
+
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
@@ -24,7 +26,8 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/EmployeeDashboard" element={<EmployeeDashboardPage />} />
-        
+        <Route path="/ScheduleManage" element={<ScheduleManagePage />} />
+
         
       </Routes>
     </BrowserRouter>
