@@ -1,16 +1,13 @@
 import {
-  getMonthlySchedules,
-  createSchedule,
-  updateSchedule,
-  deleteSchedule
+  getMySchedule,
+  createMySchedule,
+  deleteSchedule,
 } from "../services/scheduleService";
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getEmployees } from "../services/employeeService";
 
-
-function ScheduleManagePage() {
+function PersonalSchedulePage() {
   const today = new Date();
 
   const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
@@ -19,7 +16,6 @@ function ScheduleManagePage() {
   const scheduleMonth = nextMonthDate.getMonth();
   const displayMonth = scheduleMonth + 1;
 
-  const [employees, setEmployees] = useState([]);
   const [schedules, setSchedules] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
@@ -27,58 +23,44 @@ function ScheduleManagePage() {
 
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
 
   useEffect(() => {
-    fetchEmployees();
     fetchSchedules();
   }, []);
 
-  const fetchEmployees = async () => {
-    try {
-      const result = await getEmployees();
-      setEmployees(result);
-    } catch (error) {
-      console.log(error);
-      alert("取得員工資料失敗");
-    }
-  };
-
   const fetchSchedules = async () => {
     try {
-      const result = await getMonthlySchedules(scheduleYear, displayMonth);
+      const result = await getMySchedule();
       setSchedules(result);
     } catch (error) {
       console.log(error);
-      alert("取得班表資料失敗");
+      alert("取得我的班表失敗");
     }
   };
 
   const handleDeleteSchedule = async () => {
-  const confirmed = window.confirm(
-    "確定要刪除此排班嗎？"
-  );
+    const confirmed = window.confirm("確定要刪除此排班嗎？");
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  try {
-    await deleteSchedule(selectedScheduleId);
+    try {
+      await deleteSchedule(selectedScheduleId);
 
-    alert("刪除成功");
+      alert("刪除成功");
+      setShowModal(false);
 
-    setShowModal(false);
+      await fetchSchedules();
+    } catch (error) {
+      console.log(error);
 
-    await fetchSchedules();
-  } catch (error) {
-    console.log(error);
-
-    alert(
-      error.response?.data?.message ||
-      error.response?.data?.title ||
-      "刪除失敗"
-    );
-  }
-};
+      alert(
+        error.response?.data?.message ||
+          error.response?.data?.title ||
+          error.response?.data ||
+          "刪除失敗"
+      );
+    }
+  };
 
   const firstDay = new Date(scheduleYear, scheduleMonth, 1).getDay();
   const totalDays = new Date(scheduleYear, scheduleMonth + 1, 0).getDate();
@@ -128,7 +110,6 @@ function ScheduleManagePage() {
     setModalMode("create");
     setSelectedScheduleId(null);
     setSelectedDate(formatDate(day));
-    setSelectedEmployeeId("");
     setShowModal(true);
   };
 
@@ -136,43 +117,29 @@ function ScheduleManagePage() {
     setModalMode("edit");
     setSelectedScheduleId(schedule.id);
     setSelectedDate(schedule.workDate);
-    setSelectedEmployeeId(String(schedule.employeeId));
     setShowModal(true);
   };
 
-  const handleSubmitSchedule = async () => {
-    if (!selectedEmployeeId) {
-      alert("請選擇員工");
-      return;
-    }
+const handleSubmitSchedule = async () => {
+  try {
+    if (modalMode === "create") {
+      await createMySchedule(selectedDate);
+      alert("新增成功");
+    } 
+    
+    setShowModal(false);
+    await fetchSchedules();
+  } catch (error) {
+    console.log(error);
 
-    try {
-      const payload = {
-        employeeId: Number(selectedEmployeeId),
-        workDate: selectedDate,
-      };
-
-      if (modalMode === "create") {
-        await createSchedule(payload);
-        alert("排班成功");
-      } else {
-        await updateSchedule(selectedScheduleId, payload);
-        alert("編輯成功");
-      }
-
-      setShowModal(false);
-      await fetchSchedules();
-    } catch (error) {
-      console.log(error);
-
-      alert(
-        error.response?.data?.message ||
-          error.response?.data?.title ||
-          error.response?.data ||
-          "操作失敗"
-      );
-    }
-  };
+    alert(
+      error.response?.data?.message ||
+        error.response?.data?.title ||
+        error.response?.data ||
+        "操作失敗"
+    );
+  }
+};
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -199,7 +166,7 @@ function ScheduleManagePage() {
 
       <main className="max-w-7xl mx-auto p-8">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-stone-700">排班行事曆</h2>
+          <h2 className="text-3xl font-bold text-stone-700">我的班表</h2>
 
           <p className="text-gray-500 mt-2">
             目前僅開放排定下個月班表
@@ -213,7 +180,7 @@ function ScheduleManagePage() {
             </h3>
 
             <p className="text-sm text-gray-500 mt-1">
-              點日期可新增排班，點員工姓名可編輯
+              點日期可新增自己的排班，點姓名可編輯或刪除
             </p>
           </div>
 
@@ -257,7 +224,7 @@ function ScheduleManagePage() {
                               e.stopPropagation();
                               openEditModal(schedule);
                             }}
-                            className="block w-full  text-xs text-white text-center bg-stone-700 text-stone-700 rounded px-2 py-1 hover:bg-stone-200 transition"
+                            className="block w-full text-xs text-white text-center bg-stone-700 rounded px-2 py-1 hover:bg-stone-800 transition"
                           >
                             {schedule.employeeName}
                           </button>
@@ -280,62 +247,41 @@ function ScheduleManagePage() {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
             <h3 className="text-2xl font-bold text-stone-700 mb-5">
-              {modalMode === "create" ? "新增班表" : "編輯班表"}
+              {modalMode === "create" ? "新增我的班表" : "編輯我的班表"}
             </h3>
 
             <p className="text-gray-500 mb-4">
               排班日期：{selectedDate}
             </p>
 
-            <div>
-              <label className="block text-sm text-gray-500 mb-2">
-                選擇員工
-              </label>
-
-              <select
-                value={selectedEmployeeId}
-                onChange={(e) => setSelectedEmployeeId(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-stone-500"
-              >
-                <option value="">請選擇員工</option>
-
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-
             <div className="mt-8 flex justify-between items-center">
-                <div>
-                    {modalMode === "edit" && (
-                    <button
-                        onClick={handleDeleteSchedule}
-                        className="px-4 py-2 rounded-lg bg-rose-600 text-white hover:bg-red-600 transition"
-                    >
-                        刪除
-                    </button>
-                    )}
-                </div>
+              <div>
+                {modalMode === "edit" && (
+                  <button
+                    onClick={handleDeleteSchedule}
+                    className="px-4 py-2 rounded-lg bg-rose-600 text-white hover:bg-red-600 transition"
+                  >
+                    刪除
+                  </button>
+                )}
+              </div>
 
-                <div className="flex gap-3">
-                    <button
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
-                    >
-                    取消
-                    </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
+                >
+                  取消
+                </button>
 
-                    <button
-                    onClick={handleSubmitSchedule}
-                    className="px-4 py-2 rounded-lg bg-stone-700 text-white hover:bg-stone-800 transition"
-                    >
-                    {modalMode === "create" ? "儲存" : "更新"}
-                    </button>
-                </div>
-                </div>
+                <button
+                  onClick={handleSubmitSchedule}
+                  className="px-4 py-2 rounded-lg bg-stone-700 text-white hover:bg-stone-800 transition"
+                >
+                  {modalMode === "create" ? "儲存" : "更新"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -343,4 +289,4 @@ function ScheduleManagePage() {
   );
 }
 
-export default ScheduleManagePage;
+export default PersonalSchedulePage;

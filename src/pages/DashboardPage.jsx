@@ -74,7 +74,7 @@ function DashboardPage() {
               {isAdmin ? "管理員工班表與工作時段" : "查看個人班表資訊"}
             </p>
           </div>
-
+          
           <div className="grid grid-cols-2 gap-4">
             
             
@@ -83,7 +83,7 @@ function DashboardPage() {
             (<Link to="/ScheduleManage" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 <h4 className="font-semibold text-lg mb-2">
-                全體員工班表
+                管理全體員工班表
                 </h4>
 
                 <p className="text-sm text-gray-500">
@@ -91,6 +91,24 @@ function DashboardPage() {
                 </p>
             </div>
             </Link>)}
+            
+            {/* 給老闆查詢指定班表 */}
+            
+            <Link to="/MonthlySchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
+
+            <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
+                
+              <h4 className="font-semibold text-lg mb-2">
+                查詢指定班表
+              </h4>
+
+              <p className="text-sm text-gray-500">
+                查詢指定查詢班表(老闆、管理員限定)
+              </p>
+            </div>
+            </Link>
+
+            <Link to="/PersonalSchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
 
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 
@@ -102,7 +120,7 @@ function DashboardPage() {
                 管理個人排班資料
               </p>
             </div>
-
+            </Link>
 
 
                 {(isAdmin || isBoss) && (
@@ -124,8 +142,10 @@ function DashboardPage() {
                 </Link>
                 )}
 
-
-                {isBoss && (<div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
+                {/* /GetSchedule */}
+                {isBoss && (
+                    <Link to="/GetSchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition">
+                    <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                   <h4 className="font-semibold text-lg mb-2">
                     員工當月班表
                   </h4>
@@ -133,10 +153,12 @@ function DashboardPage() {
                   <p className="text-sm text-gray-500">
                     查看員工當月班表
                   </p>
-                </div>)}
+                </div> </Link>)}
 
                 
-                {isBoss && (<div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
+                {isBoss && (
+                  <Link to="/Report" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition">
+                <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                   <h4 className="font-semibold text-lg mb-2">
                     員工年度報表
                   </h4>
@@ -144,7 +166,7 @@ function DashboardPage() {
                   <p className="text-sm text-gray-500">
                     當月上班排行、年度上班天數總計
                   </p>
-                </div>)}
+                </div> </Link>)}
 
           </div>
         </div>
