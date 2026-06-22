@@ -43,15 +43,17 @@ function ReportPage() {
     <div className="min-h-screen bg-stone-50">
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-          <h3
-            className="text-3xl font-extrabold tracking-wider"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              color: "oklch(58% 0.031 107.3)",
-            }}
-          >
-            ShiftPro
-          </h3>
+                <Link to="/dashboard" className="block">
+                <h3
+                    className="text-3xl font-extrabold tracking-wider hover:opacity-80 transition"
+                    style={{
+                    fontFamily: "Montserrat, sans-serif",
+                    color: "oklch(58% 0.031 107.3)",
+                    }}
+                >
+                    ShiftPro
+                </h3>
+                </Link>
 
           <div className="flex gap-6 items-center">
             <Link
@@ -59,27 +61,6 @@ function ReportPage() {
               className="text-sm font-medium text-stone-600 hover:text-stone-900 transition"
             >
               Dashboard
-            </Link>
-
-            <Link
-              to="/schedule/manage"
-              className="text-sm font-medium text-stone-600 hover:text-stone-900 transition"
-            >
-              排班管理
-            </Link>
-
-            <Link
-              to="/schedule/personal"
-              className="text-sm font-medium text-stone-600 hover:text-stone-900 transition"
-            >
-              我的班表
-            </Link>
-
-            <Link
-              to="/schedule/report"
-              className="text-sm font-semibold text-stone-900"
-            >
-              排班報表
             </Link>
           </div>
         </div>
@@ -97,7 +78,7 @@ function ReportPage() {
         </div>
 
         <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <div className="flex gap-3 items-end">
+          <div className="flex gap-3 justify-center items-end">
             <div>
               <label className="block text-sm text-gray-500 mb-2">
                 年度
@@ -163,7 +144,7 @@ function ReportPage() {
             <thead className="bg-stone-100">
               <tr>
                 <th className="p-4 text-center">排名</th>
-                <th className="p-4 text-left">員工</th>
+                <th className="p-4 text-center">員工</th>
                 <th className="p-4 text-center">本月班數</th>
                 <th className="p-4 text-center">年度班數</th>
                 <th className="p-4 text-center">狀態</th>

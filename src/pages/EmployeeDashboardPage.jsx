@@ -9,6 +9,9 @@ import {
 } from "../services/employeeService";
 
 function EmployeeDashboardPage() {
+
+    
+
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState("");
 
@@ -113,15 +116,17 @@ function EmployeeDashboardPage() {
     <div className="min-h-screen bg-stone-50">
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-          <h3
-            className="text-3xl font-extrabold tracking-wider"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              color: "oklch(58% 0.031 107.3)",
-            }}
-          >
-            ShiftPro
-          </h3>
+                <Link to="/dashboard" className="block">
+                <h3
+                    className="text-3xl font-extrabold tracking-wider hover:opacity-80 transition"
+                    style={{
+                    fontFamily: "Montserrat, sans-serif",
+                    color: "oklch(58% 0.031 107.3)",
+                    }}
+                >
+                    ShiftPro
+                </h3>
+                </Link>
 
           <Link
             to="/dashboard"

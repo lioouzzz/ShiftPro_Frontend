@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProfile, updateProfile } from "../services/profileService";
 function ProfilePage() {
-
   const name = localStorage.getItem("name");
   const role = localStorage.getItem("role");
 
@@ -70,15 +69,17 @@ const handleUpdateProfile = async () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
           <div>
-            <h3
-              className="text-3xl font-extrabold tracking-wider"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                color: "oklch(58% 0.031 107.3)",
-              }}
-            >
-              ShiftPro
-            </h3>
+                <Link to="/dashboard" className="block">
+                <h3
+                    className="text-3xl font-extrabold tracking-wider hover:opacity-80 transition"
+                    style={{
+                    fontFamily: "Montserrat, sans-serif",
+                    color: "oklch(58% 0.031 107.3)",
+                    }}
+                >
+                    ShiftPro
+                </h3>
+                </Link>
           </div>
 
           <div className="flex items-center gap-6">
@@ -231,7 +232,7 @@ const handleUpdateProfile = async () => {
         >
           取消
         </button>
-        
+
         <button
         onClick={handleUpdateProfile}
         className="px-4 py-2 rounded-lg bg-stone-700 text-white hover:bg-stone-800 transition"

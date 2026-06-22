@@ -13,7 +13,7 @@ import PersonalSchedulePage from "./pages/PersonalSchedulePage";
 import ReportPage from "./pages/ReportPage";
 import MonthlySchedulePage from "./pages/MonthlySchedulePage";
 import GetSchedulePage from "./pages/GetSchedulePage";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -28,14 +28,14 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/EmployeeDashboard" element={<EmployeeDashboardPage />} />
-        <Route path="/ScheduleManage" element={<ScheduleManagePage />} />
-        <Route path="/PersonalSchedule" element={<PersonalSchedulePage />} />
-        <Route path="/Report" element={<ReportPage />} />
-        <Route path="/MonthlySchedule" element={<MonthlySchedulePage />} />
-        <Route path="/GetSchedule" element={<GetSchedulePage />} />
+        <Route path="/dashboard" element={ <ProtectedRoute roles={["Admin","Employee","Boss"]}> <DashboardPage /> </ProtectedRoute>} />
+        <Route path="/profile" element={ <ProtectedRoute roles={["Admin","Employee","Boss"]}> <ProfilePage /> </ProtectedRoute>} />
+        <Route path="/EmployeeDashboard" element={  <ProtectedRoute roles={["Admin","Boss"]}> <EmployeeDashboardPage />  </ProtectedRoute>} />
+        <Route path="/ScheduleManage" element={ <ProtectedRoute roles={["Admin","Boss"]}> <ScheduleManagePage /> </ProtectedRoute> } />
+        <Route path="/PersonalSchedule" element={ <ProtectedRoute roles={["Employee"]}> <PersonalSchedulePage /> </ProtectedRoute>} />
+        <Route path="/Report" element={ <ProtectedRoute roles={["Boss","Admin"]}><ReportPage />  </ProtectedRoute> } />
+        <Route path="/MonthlySchedule" element={ <ProtectedRoute roles={["Boss","Admin"]}><MonthlySchedulePage />  </ProtectedRoute>} />
+        <Route path="/GetSchedule" element={  <ProtectedRoute roles={["Boss","Admin","Employee"]}> <GetSchedulePage /> </ProtectedRoute>} />
 
         
         

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getMonthlySchedules } from "../services/scheduleService";
 
@@ -12,6 +12,9 @@ function MonlySchedulePage() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
+      useEffect(() => {
+      handleSearch();
+    }, []);
 
       const handleSearch = async () => {
     try {
@@ -31,15 +34,17 @@ return (
       {/* Navbar */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-          <h3
-            className="text-3xl font-extrabold tracking-wider"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              color: "oklch(58% 0.031 107.3)",
-            }}
-          >
-            ShiftPro
-          </h3>
+                <Link to="/dashboard" className="block">
+                <h3
+                    className="text-3xl font-extrabold tracking-wider hover:opacity-80 transition"
+                    style={{
+                    fontFamily: "Montserrat, sans-serif",
+                    color: "oklch(58% 0.031 107.3)",
+                    }}
+                >
+                    ShiftPro
+                </h3>
+                </Link>
 
           <Link
             to="/dashboard"
@@ -53,19 +58,17 @@ return (
       {/* Main */}
       <main className="max-w-7xl mx-auto px-8 py-8">
         <div className="bg-white rounded-2xl shadow-sm border p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-800">
-                年月排班報表
-              </h1>
-              <p className="text-sm text-stone-500 mt-1">
-                請選擇年份與月份查詢員工排班資料
-              </p>
-            </div>
-          </div>
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold text-stone-800">
+            年月排班報表
+          </h1>
 
+          <p className="text-sm text-stone-500 mt-1">
+            請選擇年份與月份查詢員工排班資料
+          </p>
+        </div>
           {/* Search Area */}
-          <div className="flex flex-wrap gap-4 items-end mb-6">
+          <div className="flex justify-center gap-4 items-end mb-6">
             <div>
               <label className="block text-sm font-medium text-stone-600 mb-1">
                 年份
@@ -98,7 +101,7 @@ return (
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="bg-stone-700 text-white px-6 py-2 rounded-lg hover:bg-stone-800 transition disabled:opacity-50"
+              className="bg-stone-700 text-white px-6 py-2 rounded-lg hover:bg-stone-800 transition disabled:opacity-50 mt-2"
             >
               {loading ? "查詢中..." : "查詢"}
             </button>
@@ -109,10 +112,10 @@ return (
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-stone-100 text-stone-700">
-                  <th className="border px-4 py-3 text-left">ID</th>
-                  <th className="border px-4 py-3 text-left">員工編號</th>
-                  <th className="border px-4 py-3 text-left">員工姓名</th>
-                  <th className="border px-4 py-3 text-left">工作日期</th>
+                  <th className="border px-4 py-3 text-center">ID</th>
+                  <th className="border px-4 py-3 text-center">員工編號</th>
+                  <th className="border px-4 py-3 text-center">員工姓名</th>
+                  <th className="border px-4 py-3 text-center">工作日期</th>
                 </tr>
               </thead>
 

@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link ,useNavigate } from "react-router-dom";
+
+
 
 function DashboardPage() {
   const name = localStorage.getItem("name");
@@ -8,21 +10,32 @@ function DashboardPage() {
   const isBoss = role === "Boss";
   const isEmployee = role === "Employee";
 
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("name");
+        navigate("/login");
+    };
   return (
     <div className="min-h-screen bg-stone-50">
       {/* 上方導覽列 */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
           <div>
-            <h3
-              className="text-3xl font-extrabold tracking-wider"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                color: "oklch(58% 0.031 107.3)",
-              }}
-            >
-              ShiftPro
-            </h3>
+                <Link to="/dashboard" className="block">
+                <h3
+                    className="text-3xl font-extrabold tracking-wider hover:opacity-80 transition"
+                    style={{
+                    fontFamily: "Montserrat, sans-serif",
+                    color: "oklch(58% 0.031 107.3)",
+                    }}
+                >
+                    ShiftPro
+                </h3>
+                </Link>
           </div>
 
             <div className="flex items-center gap-6">
@@ -45,7 +58,7 @@ function DashboardPage() {
                 </p>
             </div>
 
-            <button
+            <button onClick={handleLogout}
                 className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
             >
                 登出
@@ -78,7 +91,7 @@ function DashboardPage() {
           <div className="grid grid-cols-2 gap-4">
             
             
-            {(isAdmin || isBoss) && 
+            {isAdmin && 
             
             (<Link to="/ScheduleManage" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
@@ -94,7 +107,7 @@ function DashboardPage() {
             
             {/* 給老闆查詢指定班表 */}
             
-            <Link to="/MonthlySchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
+            {(isBoss || isAdmin) && <Link to="/MonthlySchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
 
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 
@@ -106,21 +119,22 @@ function DashboardPage() {
                 查詢指定查詢班表(老闆、管理員限定)
               </p>
             </div>
-            </Link>
+            </Link>}
 
-            <Link to="/PersonalSchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
+
+            {(isEmployee) && <Link to="/PersonalSchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition" >
 
             <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                 
               <h4 className="font-semibold text-lg mb-2">
-                管理個人班表
+                新增班表
               </h4>
 
               <p className="text-sm text-gray-500">
                 管理個人排班資料
               </p>
             </div>
-            </Link>
+            </Link>}
 
 
                 {(isAdmin || isBoss) && (
@@ -142,21 +156,21 @@ function DashboardPage() {
                 </Link>
                 )}
 
-                {/* /GetSchedule */}
-                {isBoss && (
+                {/* /GetSchedule 員工當月班表 */}
+                 
                     <Link to="/GetSchedule" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition">
                     <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                   <h4 className="font-semibold text-lg mb-2">
-                    員工當月班表
+                    全體員工下個月排班表
                   </h4>
 
                   <p className="text-sm text-gray-500">
                     查看員工當月班表
                   </p>
-                </div> </Link>)}
+                </div> </Link>
 
                 
-                {isBoss && (
+                {(isBoss || isAdmin) && (
                   <Link to="/Report" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition">
                 <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
                   <h4 className="font-semibold text-lg mb-2">
